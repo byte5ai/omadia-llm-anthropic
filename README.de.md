@@ -12,7 +12,7 @@ Ein signiertes omadia-Plugin, das Claude (Opus, Sonnet, Haiku) als Provider auf 
 
 [**Haupt-Repo**](https://github.com/byte5ai/omadia) · [**Website**](https://omadia.ai) · [**Plugin-Hub**](https://hub.omadia.ai) · [**Modelle**](#modelle) · [**Installation**](#installation)
 
-> 🇬🇧 This guide is also available [in English](./README.md).
+🇬🇧 This guide is also available [in English](./README.md).
 
 </div>
 
