@@ -12,7 +12,7 @@ A signed omadia plugin that adds Claude (Opus, Sonnet, Haiku) as a provider you 
 
 [**Main repo**](https://github.com/byte5ai/omadia) · [**Website**](https://omadia.ai) · [**Plugin hub**](https://hub.omadia.ai) · [**Models**](#models) · [**Install**](#install)
 
-> 🇩🇪 Diese Anleitung gibt es auch [auf Deutsch](./README.de.md).
+🇩🇪 Diese Anleitung gibt es auch [auf Deutsch](./README.de.md).
 
 </div>
 
