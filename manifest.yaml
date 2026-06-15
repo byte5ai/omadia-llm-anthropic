@@ -4,7 +4,7 @@ identity:
   id: "@omadia/plugin-llm-anthropic"
   name: "Anthropic (Claude) LLM Provider"
   version: "0.1.0"
-  kind: "provider"
+  kind: "extension"
   domain: "llm.provider.anthropic"
   description: "Macht Anthropic (Claude) als admin-wählbaren LLM-Provider in omadia verfügbar — über die native Anthropic-Messages-API. Deklarativer Provider — wird aus diesem Manifest registriert, ohne Laufzeit-Provider-Code."
   authors:
