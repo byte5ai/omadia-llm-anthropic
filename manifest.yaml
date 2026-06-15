@@ -1,0 +1,97 @@
+schema_version: "1"
+
+identity:
+  id: "@omadia/plugin-llm-anthropic"
+  name: "Anthropic (Claude) LLM Provider"
+  version: "0.1.0"
+  kind: "provider"
+  domain: "llm.provider.anthropic"
+  description: "Macht Anthropic (Claude) als admin-wählbaren LLM-Provider in omadia verfügbar — über die native Anthropic-Messages-API. Deklarativer Provider — wird aus diesem Manifest registriert, ohne Laufzeit-Provider-Code."
+  authors:
+    - name: "byte5 GmbH"
+      email: "info@omadia.ai"
+      url: "https://omadia.ai"
+  license: "MIT"
+  categories:
+    - "llm-provider"
+    - "infrastructure"
+
+compat:
+  core: ">=1.0 <2.0"
+  node: ">=20"
+
+lifecycle:
+  entry: "dist/plugin.js"
+
+# Declarative LLM-provider contribution. The kernel reads this block at
+# manifest-load (before any plugin activates) and registers Anthropic into the
+# LlmProviderCatalog + the dynamic model overlay. The API key is set centrally
+# on the admin Providers page (vault key `provider:anthropic/api_key`), exactly
+# like the built-in OpenAI provider — NOT via per-plugin setup secrets, because
+# the orchestrator reads the key from its own (shared) vault scope.
+#
+# wire_format is "anthropic": Claude speaks the native Anthropic Messages API,
+# NOT an OpenAI-compatible Chat Completions endpoint. There are no OpenAI-style
+# quirks to declare, so this block has no `quirks`.
+llm_provider:
+  id: "anthropic"
+  label: "Anthropic"
+  wire_format: "anthropic"
+  default_base_url: "https://api.anthropic.com"
+  base_url_config_key: "anthropic_base_url"
+  models:
+    - id: "anthropic:claude-opus-4-8"
+      model_id: "claude-opus-4-8"
+      label: "Claude Opus 4.8"
+      class: "frontier"
+      max_tokens: 32000
+      context_window: 200000
+      vision: true
+      aliases: ["opus"]
+    - id: "anthropic:claude-sonnet-4-6"
+      model_id: "claude-sonnet-4-6"
+      label: "Claude Sonnet 4.6"
+      class: "balanced"
+      max_tokens: 64000
+      context_window: 200000
+      vision: true
+      aliases: ["sonnet"]
+    - id: "anthropic:claude-haiku-4-5-20251001"
+      model_id: "claude-haiku-4-5-20251001"
+      label: "Claude Haiku 4.5"
+      class: "fast"
+      max_tokens: 8192
+      context_window: 200000
+      vision: true
+      aliases: ["haiku"]
+
+setup:
+  fields:
+    - key: "anthropic_base_url"
+      type: "url"
+      label: "Anthropic Base-URL"
+      help: "Standard: https://api.anthropic.com — nur für Proxy-/Gateway-Setups überschreiben."
+      required: false
+      default: "https://api.anthropic.com"
+
+playbook:
+  when_to_use: |
+    Installiere diesen Provider, um Anthropic-Modelle (Claude Opus / Sonnet /
+    Haiku) als Orchestrator-/Sub-Agent-/Verifier-LLM auszuwählen. Nach der
+    Installation den API-Key auf der Admin-Providers-Seite hinterlegen und
+    Anthropic dem gewünschten Plugin (z.B. Orchestrator) zuweisen.
+
+permissions:
+  memory:
+    reads: []
+    writes: []
+  graph:
+    reads: []
+    writes: []
+  network:
+    outbound:
+      - "api.anthropic.com"
+  filesystem:
+    scratch: false
+
+integrations: []
