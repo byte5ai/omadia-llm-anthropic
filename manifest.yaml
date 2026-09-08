@@ -3,7 +3,7 @@ schema_version: "1"
 identity:
   id: "@omadia/plugin-llm-anthropic"
   name: "Anthropic (Claude) LLM Provider"
-  version: "0.1.0"
+  version: "0.2.1"
   kind: "extension"
   domain: "llm.provider.anthropic"
   description: "Macht Anthropic (Claude) als admin-wählbaren LLM-Provider in omadia verfügbar — über die native Anthropic-Messages-API. Deklarativer Provider — wird aus diesem Manifest registriert, ohne Laufzeit-Provider-Code."
@@ -39,23 +39,64 @@ llm_provider:
   wire_format: "anthropic"
   default_base_url: "https://api.anthropic.com"
   base_url_config_key: "anthropic_base_url"
+  # models is the offline seed; discovery rules must never name a model version.
+  discovery:
+    include:
+      - "^claude-"
+    # Fable and Mythos reject forced tool_choice with 400 and may stop with refusal;
+    # exclude them until the adapter supports that contract. Older families are retired.
+    exclude:
+      - "fable"
+      - "mythos"
+      - "^claude-[23]([.-]|$)"
+      - "^claude-instant"
+    classify:
+      - match: "^claude-opus-"
+        class: "frontier"
+        aliases: ["opus"]
+        max_tokens: 32000
+        context_window: 200000
+        vision: true
+        effort_levels: ["low", "medium", "high", "xhigh"]
+        effort_default: "high"
+      - match: "^claude-sonnet-"
+        class: "balanced"
+        aliases: ["sonnet"]
+        max_tokens: 64000
+        context_window: 200000
+        vision: true
+        effort_levels: ["low", "medium", "high", "xhigh"]
+        effort_default: "high"
+      - match: "^claude-haiku-"
+        class: "fast"
+        aliases: ["haiku"]
+        max_tokens: 8192
+        context_window: 200000
+        vision: true
   models:
-    - id: "anthropic:claude-opus-4-8"
-      model_id: "claude-opus-4-8"
-      label: "Claude Opus 4.8"
+    - id: "anthropic:claude-opus-5"
+      model_id: "claude-opus-5"
+      label: "Claude Opus 5"
       class: "frontier"
       max_tokens: 32000
       context_window: 200000
       vision: true
       aliases: ["opus"]
-    - id: "anthropic:claude-sonnet-4-6"
-      model_id: "claude-sonnet-4-6"
-      label: "Claude Sonnet 4.6"
+      # Declared only where the vendor documents the knob; Haiku uses
+      # `budget_tokens` instead. Mirrors the bundled built-in descriptor in
+      # the omadia core repo (middleware/src/platform/builtinLlmProviders.ts).
+      effort_levels: ["low", "medium", "high", "xhigh"]
+      effort_default: "high"
+    - id: "anthropic:claude-sonnet-5"
+      model_id: "claude-sonnet-5"
+      label: "Claude Sonnet 5"
       class: "balanced"
       max_tokens: 64000
       context_window: 200000
       vision: true
       aliases: ["sonnet"]
+      effort_levels: ["low", "medium", "high", "xhigh"]
+      effort_default: "high"
     - id: "anthropic:claude-haiku-4-5-20251001"
       model_id: "claude-haiku-4-5-20251001"
       label: "Claude Haiku 4.5"

@@ -24,8 +24,8 @@ omadia is a self-hostable agentic OS: compose multi-agent teams from signed plug
 
 | Model | Class |
 | --- | --- |
-| Claude Opus 4.8 | frontier |
-| Claude Sonnet 4.6 | balanced |
+| Claude Opus 5 | frontier |
+| Claude Sonnet 5 | balanced |
 | Claude Haiku 4.5 | fast |
 
 Agents ask for a class (`fast`, `balanced`, `frontier`). omadia maps the class to the model, so an agent never hard-codes one.
