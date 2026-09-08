@@ -39,6 +39,40 @@ llm_provider:
   wire_format: "anthropic"
   default_base_url: "https://api.anthropic.com"
   base_url_config_key: "anthropic_base_url"
+  # models is the offline seed; discovery rules must never name a model version.
+  discovery:
+    include:
+      - "^claude-"
+    # Fable and Mythos reject forced tool_choice with 400 and may stop with refusal;
+    # exclude them until the adapter supports that contract. Older families are retired.
+    exclude:
+      - "fable"
+      - "mythos"
+      - "^claude-[23]([.-]|$)"
+      - "^claude-instant"
+    classify:
+      - match: "^claude-opus-"
+        class: "frontier"
+        aliases: ["opus"]
+        max_tokens: 32000
+        context_window: 200000
+        vision: true
+        effort_levels: ["low", "medium", "high", "xhigh"]
+        effort_default: "high"
+      - match: "^claude-sonnet-"
+        class: "balanced"
+        aliases: ["sonnet"]
+        max_tokens: 64000
+        context_window: 200000
+        vision: true
+        effort_levels: ["low", "medium", "high", "xhigh"]
+        effort_default: "high"
+      - match: "^claude-haiku-"
+        class: "fast"
+        aliases: ["haiku"]
+        max_tokens: 8192
+        context_window: 200000
+        vision: true
   models:
     - id: "anthropic:claude-opus-5"
       model_id: "claude-opus-5"
