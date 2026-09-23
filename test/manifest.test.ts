@@ -217,3 +217,31 @@ test('effort defaults belong to effort levels and max is never an effort level',
     );
   }
 });
+
+// omadia #1157 — Fable is discoverable, Mythos stays excluded (access-program
+// only), and the Fable rule sorts after Opus: rule order is the class-default
+// preference, so `Auto`/`opus` must keep resolving to Opus, not the pricier Fable.
+function isDiscovered(modelId: string): boolean {
+  const d = discovery();
+  const included = (d.include ?? []).some((p) => new RegExp(p, 'i').test(modelId));
+  const excluded = (d.exclude ?? []).some((p) => new RegExp(p, 'i').test(modelId));
+  return included && !excluded;
+}
+
+test('fable is discovered, mythos and retired families are excluded', () => {
+  assert.equal(isDiscovered('claude-fable-5-1'), true, 'claude-fable-* must be discoverable');
+  assert.equal(isDiscovered('claude-opus-5-5'), true);
+  assert.equal(isDiscovered('claude-mythos-5-1'), false, 'claude-mythos-* must stay excluded');
+  assert.equal(isDiscovered('claude-3-5-sonnet-20241022'), false);
+  assert.equal(isDiscovered('claude-instant-1.2'), false);
+});
+
+test('fable classifies as frontier but ranks after opus', () => {
+  const rules = discovery().classify;
+  const opus = rules.findIndex((r) => new RegExp(r.match, 'i').test('claude-opus-5-5'));
+  const fable = rules.findIndex((r) => new RegExp(r.match, 'i').test('claude-fable-5-1'));
+  assert.ok(opus >= 0 && fable >= 0, 'both opus and fable need a classify rule');
+  assert.equal(rules[fable]?.class, 'frontier');
+  assert.deepEqual(rules[fable]?.aliases, ['fable']);
+  assert.ok(opus < fable, 'the fable rule must come after the opus rule');
+});

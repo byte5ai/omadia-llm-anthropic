@@ -3,7 +3,7 @@ schema_version: "1"
 identity:
   id: "@omadia/plugin-llm-anthropic"
   name: "Anthropic (Claude) LLM Provider"
-  version: "0.2.1"
+  version: "0.3.0"
   kind: "extension"
   domain: "llm.provider.anthropic"
   description: "Macht Anthropic (Claude) als admin-wählbaren LLM-Provider in omadia verfügbar — über die native Anthropic-Messages-API. Deklarativer Provider — wird aus diesem Manifest registriert, ohne Laufzeit-Provider-Code."
@@ -43,10 +43,11 @@ llm_provider:
   discovery:
     include:
       - "^claude-"
-    # Fable and Mythos reject forced tool_choice with 400 and may stop with refusal;
-    # exclude them until the adapter supports that contract. Older families are retired.
+    # Mythos: access-program only. Fable is offered — its one breaking request
+    # difference (forced tool_choice -> 400, shared with Opus 5.5) is degraded
+    # to `auto` in the core Anthropic adapter (omadia #1157). claude-3-* /
+    # claude-2* / claude-instant: retired families.
     exclude:
-      - "fable"
       - "mythos"
       - "^claude-[23]([.-]|$)"
       - "^claude-instant"
@@ -73,6 +74,17 @@ llm_provider:
         max_tokens: 8192
         context_window: 200000
         vision: true
+      # Frontier, but deliberately LAST: rule order is the class-default
+      # preference, so `Auto` and the `opus` alias keep resolving to Opus.
+      # Fable costs 2-2.5x Opus per token — explicit selection only.
+      - match: "^claude-fable-"
+        class: "frontier"
+        aliases: ["fable"]
+        max_tokens: 32000
+        context_window: 1000000
+        vision: true
+        effort_levels: ["low", "medium", "high", "xhigh"]
+        effort_default: "high"
   models:
     - id: "anthropic:claude-opus-5"
       model_id: "claude-opus-5"
