@@ -146,6 +146,8 @@ permissions:
   network:
     outbound:
       - "api.anthropic.com"
+      # Operator-configured base URL (proxy/gateway/remote); the kernel allows its host.
+      - "$config.anthropic_base_url"
   filesystem:
     scratch: false
 
