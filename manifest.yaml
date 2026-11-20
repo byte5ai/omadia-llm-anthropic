@@ -3,8 +3,10 @@ schema_version: "1"
 identity:
   id: "@omadia/plugin-llm-anthropic"
   name: "Anthropic (Claude) LLM Provider"
-  version: "0.3.0"
-  kind: "extension"
+  version: "0.4.0"
+  # Model plugin (kind `model`): only the kernel's model gateway calls it. The provider
+  # is contributed declaratively via the `llm_provider` block below.
+  kind: "model"
   domain: "llm.provider.anthropic"
   description: "Macht Anthropic (Claude) als admin-wählbaren LLM-Provider in omadia verfügbar — über die native Anthropic-Messages-API. Deklarativer Provider — wird aus diesem Manifest registriert, ohne Laufzeit-Provider-Code."
   authors:
@@ -17,7 +19,7 @@ identity:
     - "infrastructure"
 
 compat:
-  core: ">=1.0 <2.0"
+  core: ">=1.75.0 <2.0"
   node: ">=20"
 
 lifecycle:

@@ -32,7 +32,7 @@ Agents ask for a class (`fast`, `balanced`, `frontier`). omadia maps the class t
 
 ## How it works in omadia
 
-A declarative provider plugin, so it ships no runtime provider code. The omadia kernel reads the `llm_provider` block from `manifest.yaml` (id, base URL, models) when the plugin loads, before any agent activates, and registers it in the provider catalog. Claude speaks the native Anthropic Messages API, so omadia drives it through its built-in Anthropic adapter.
+A model plugin (kind `model`); only the kernel's model gateway calls it. It is a declarative provider plugin, so it ships no runtime provider code. The omadia kernel reads the `llm_provider` block from `manifest.yaml` (id, base URL, models) when the plugin loads, before any agent activates, and registers it in the provider catalog. Claude speaks the native Anthropic Messages API, so omadia drives it through its built-in Anthropic adapter.
 
 ## Install
 
